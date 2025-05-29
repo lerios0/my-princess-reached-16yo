@@ -110,64 +110,111 @@
   </div>
 
   <script>
-    // GENERATE BIRTHDAY MELODY DIRECTLY IN BROWSER
+    // GENERATE PIANO-STYLE BIRTHDAY MELODY
     function generateBirthdayTune() {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioCtx.createOscillator();
-      const gainNode = audioCtx.createGain();
+      const masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.5;
+      masterGain.connect(audioCtx.destination);
       
-      oscillator.type = 'triangle';
-      gainNode.gain.value = 0.5;
+      // Create a more piano-like sound
+      function createPianoNote(freq, startTime, duration) {
+        // Create oscillators for richer sound
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc1.type = 'sine';
+        osc2.type = 'triangle';
+        osc1.frequency.value = freq;
+        osc2.frequency.value = freq * 2;
+        
+        // Create envelope for piano-like attack/decay
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(0.8, startTime + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.3, startTime + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+        
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(masterGain);
+        
+        osc1.start(startTime);
+        osc2.start(startTime);
+        osc1.stop(startTime + duration + 0.1);
+        osc2.stop(startTime + duration + 0.1);
+      }
       
-      // "Happy Birthday" melody notes (in Hz)
+      // Extended "Happy Birthday" melody with more notes
       const notes = [
+        // First phrase
         {freq: 392, duration: 0.3}, // G
-        {freq: 392, duration: 0.1}, // G
-        {freq: 440, duration: 0.4}, // A
-        {freq: 392, duration: 0.4}, // G
-        {freq: 523, duration: 0.4}, // C
-        {freq: 494, duration: 0.8}, // B
+        {freq: 392, duration: 0.2}, // G
+        {freq: 440, duration: 0.5}, // A
+        {freq: 392, duration: 0.5}, // G
+        {freq: 523, duration: 0.5}, // C
+        {freq: 494, duration: 1.0}, // B
+        
+        // Second phrase
+        {freq: 392, duration: 0.3}, // G
+        {freq: 392, duration: 0.2}, // G
+        {freq: 440, duration: 0.5}, // A
+        {freq: 392, duration: 0.5}, // G
+        {freq: 587, duration: 0.5}, // D
+        {freq: 523, duration: 1.0}, // C
+        
+        // Third phrase
+        {freq: 392, duration: 0.3}, // G
+        {freq: 392, duration: 0.2}, // G
+        {freq: 784, duration: 0.5}, // G (high)
+        {freq: 659, duration: 0.5}, // E
+        {freq: 523, duration: 0.5}, // C
+        {freq: 494, duration: 0.5}, // B
+        {freq: 440, duration: 1.0}, // A
+        
+        // Fourth phrase
+        {freq: 698, duration: 0.3}, // F
+        {freq: 698, duration: 0.2}, // F
+        {freq: 659, duration: 0.5}, // E
+        {freq: 523, duration: 0.5}, // C
+        {freq: 587, duration: 0.5}, // D
+        {freq: 523, duration: 1.5}, // C
+        
+        // Added chorus section to make it longer
+        {freq: 523, duration: 0.3}, // C
+        {freq: 523, duration: 0.2}, // C
+        {freq: 587, duration: 0.5}, // D
+        {freq: 523, duration: 0.5}, // C
+        {freq: 659, duration: 0.5}, // E
+        {freq: 587, duration: 1.0}, // D
         
         {freq: 392, duration: 0.3}, // G
-        {freq: 392, duration: 0.1}, // G
-        {freq: 440, duration: 0.4}, // A
-        {freq: 392, duration: 0.4}, // G
-        {freq: 587, duration: 0.4}, // D
-        {freq: 523, duration: 0.8}, // C
-        
-        {freq: 392, duration: 0.3}, // G
-        {freq: 392, duration: 0.1}, // G
-        {freq: 784, duration: 0.4}, // G (high)
-        {freq: 659, duration: 0.4}, // E
-        {freq: 523, duration: 0.4}, // C
-        {freq: 494, duration: 0.4}, // B
-        {freq: 440, duration: 0.8}, // A
+        {freq: 392, duration: 0.2}, // G
+        {freq: 784, duration: 0.5}, // G (high)
+        {freq: 659, duration: 0.5}, // E
+        {freq: 523, duration: 0.5}, // C
+        {freq: 494, duration: 0.5}, // B
+        {freq: 440, duration: 1.0}, // A
         
         {freq: 698, duration: 0.3}, // F
-        {freq: 698, duration: 0.1}, // F
-        {freq: 659, duration: 0.4}, // E
-        {freq: 523, duration: 0.4}, // C
-        {freq: 587, duration: 0.4}, // D
-        {freq: 523, duration: 0.8}  // C
+        {freq: 698, duration: 0.2}, // F
+        {freq: 659, duration: 0.5}, // E
+        {freq: 523, duration: 0.5}, // C
+        {freq: 587, duration: 0.5}, // D
+        {freq: 523, duration: 2.0}  // C (final note longer)
       ];
       
-      let time = audioCtx.currentTime;
+      let time = audioCtx.currentTime + 0.1;
       
+      // Play each note with piano-like sound
       notes.forEach(note => {
-        oscillator.frequency.setValueAtTime(note.freq, time);
-        gainNode.gain.setValueAtTime(0.5, time);
-        time += note.duration * 0.7; // Play note
-        gainNode.gain.setValueAtTime(0, time); // Stop note
-        time += note.duration * 0.3; // Short pause
+        createPianoNote(note.freq, time, note.duration * 0.9);
+        time += note.duration;
       });
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
-      oscillator.start();
       
       return {
         stop: () => {
-          oscillator.stop();
+          masterGain.disconnect();
           audioCtx.close();
         },
         duration: time + 1
