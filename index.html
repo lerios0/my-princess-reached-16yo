@@ -110,106 +110,94 @@
   </div>
 
   <script>
-    // GENERATE PIANO-STYLE BIRTHDAY MELODY
+    // GENERATE SILLY CUTE BIRTHDAY MELODY
     function generateBirthdayTune() {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const masterGain = audioCtx.createGain();
-      masterGain.gain.value = 0.5;
+      masterGain.gain.value = 0.4; // Lower volume for cuteness
       masterGain.connect(audioCtx.destination);
       
-      // Create a more piano-like sound
-      function createPianoNote(freq, startTime, duration) {
-        // Create oscillators for richer sound
-        const osc1 = audioCtx.createOscillator();
-        const osc2 = audioCtx.createOscillator();
+      // Create a cute, silly sound
+      function createCuteNote(freq, startTime, duration) {
+        const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         
-        osc1.type = 'sine';
-        osc2.type = 'triangle';
-        osc1.frequency.value = freq;
-        osc2.frequency.value = freq * 2;
+        // Use square wave for a more toy-like sound
+        osc.type = 'square';
+        osc.frequency.value = freq;
         
-        // Create envelope for piano-like attack/decay
+        // Quick attack and release for bouncy feel
         gain.gain.setValueAtTime(0, startTime);
-        gain.gain.linearRampToValueAtTime(0.8, startTime + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.3, startTime + 0.1);
+        gain.gain.linearRampToValueAtTime(0.7, startTime + 0.01);
         gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
         
-        osc1.connect(gain);
-        osc2.connect(gain);
+        // Add vibrato for extra silliness
+        const vibrato = audioCtx.createOscillator();
+        const vibratoGain = audioCtx.createGain();
+        vibrato.frequency.value = 10; // Fast vibrato
+        vibratoGain.gain.value = freq * 0.05; // Subtle pitch variation
+        vibrato.connect(vibratoGain);
+        vibratoGain.connect(osc.frequency);
+        
+        osc.connect(gain);
         gain.connect(masterGain);
         
-        osc1.start(startTime);
-        osc2.start(startTime);
-        osc1.stop(startTime + duration + 0.1);
-        osc2.stop(startTime + duration + 0.1);
+        osc.start(startTime);
+        vibrato.start(startTime);
+        osc.stop(startTime + duration + 0.1);
+        vibrato.stop(startTime + duration + 0.1);
       }
       
-      // Extended "Happy Birthday" melody with more notes
+      // Faster, bouncier "Happy Birthday" melody
       const notes = [
-        // First phrase
-        {freq: 392, duration: 0.3}, // G
+        // First phrase (faster tempo)
         {freq: 392, duration: 0.2}, // G
-        {freq: 440, duration: 0.5}, // A
-        {freq: 392, duration: 0.5}, // G
-        {freq: 523, duration: 0.5}, // C
-        {freq: 494, duration: 1.0}, // B
+        {freq: 392, duration: 0.15}, // G
+        {freq: 440, duration: 0.3}, // A
+        {freq: 392, duration: 0.3}, // G
+        {freq: 523, duration: 0.3}, // C
+        {freq: 494, duration: 0.6}, // B
         
         // Second phrase
-        {freq: 392, duration: 0.3}, // G
         {freq: 392, duration: 0.2}, // G
-        {freq: 440, duration: 0.5}, // A
-        {freq: 392, duration: 0.5}, // G
-        {freq: 587, duration: 0.5}, // D
-        {freq: 523, duration: 1.0}, // C
+        {freq: 392, duration: 0.15}, // G
+        {freq: 440, duration: 0.3}, // A
+        {freq: 392, duration: 0.3}, // G
+        {freq: 587, duration: 0.3}, // D
+        {freq: 523, duration: 0.6}, // C
         
         // Third phrase
-        {freq: 392, duration: 0.3}, // G
         {freq: 392, duration: 0.2}, // G
-        {freq: 784, duration: 0.5}, // G (high)
-        {freq: 659, duration: 0.5}, // E
-        {freq: 523, duration: 0.5}, // C
-        {freq: 494, duration: 0.5}, // B
-        {freq: 440, duration: 1.0}, // A
+        {freq: 392, duration: 0.15}, // G
+        {freq: 784, duration: 0.3}, // G (high)
+        {freq: 659, duration: 0.3}, // E
+        {freq: 523, duration: 0.3}, // C
+        {freq: 494, duration: 0.3}, // B
+        {freq: 440, duration: 0.6}, // A
         
         // Fourth phrase
-        {freq: 698, duration: 0.3}, // F
         {freq: 698, duration: 0.2}, // F
-        {freq: 659, duration: 0.5}, // E
-        {freq: 523, duration: 0.5}, // C
-        {freq: 587, duration: 0.5}, // D
-        {freq: 523, duration: 1.5}, // C
-        
-        // Added chorus section to make it longer
+        {freq: 698, duration: 0.15}, // F
+        {freq: 659, duration: 0.3}, // E
         {freq: 523, duration: 0.3}, // C
-        {freq: 523, duration: 0.2}, // C
-        {freq: 587, duration: 0.5}, // D
-        {freq: 523, duration: 0.5}, // C
-        {freq: 659, duration: 0.5}, // E
-        {freq: 587, duration: 1.0}, // D
+        {freq: 587, duration: 0.3}, // D
+        {freq: 523, duration: 0.9}, // C
         
-        {freq: 392, duration: 0.3}, // G
-        {freq: 392, duration: 0.2}, // G
-        {freq: 784, duration: 0.5}, // G (high)
-        {freq: 659, duration: 0.5}, // E
-        {freq: 523, duration: 0.5}, // C
-        {freq: 494, duration: 0.5}, // B
-        {freq: 440, duration: 1.0}, // A
-        
-        {freq: 698, duration: 0.3}, // F
-        {freq: 698, duration: 0.2}, // F
-        {freq: 659, duration: 0.5}, // E
-        {freq: 523, duration: 0.5}, // C
-        {freq: 587, duration: 0.5}, // D
-        {freq: 523, duration: 2.0}  // C (final note longer)
+        // Added silly outro
+        {freq: 523, duration: 0.1}, // C
+        {freq: 587, duration: 0.1}, // D
+        {freq: 659, duration: 0.1}, // E
+        {freq: 784, duration: 0.3}, // G
+        {freq: 659, duration: 0.1}, // E
+        {freq: 784, duration: 0.5}  // G (final note)
       ];
       
       let time = audioCtx.currentTime + 0.1;
       
-      // Play each note with piano-like sound
+      // Play each note with cute sound
       notes.forEach(note => {
-        createPianoNote(note.freq, time, note.duration * 0.9);
-        time += note.duration;
+        createCuteNote(note.freq, time, note.duration * 0.8);
+        time += note.duration * 0.9; // Faster transitions
       });
       
       return {
@@ -217,7 +205,7 @@
           masterGain.disconnect();
           audioCtx.close();
         },
-        duration: time + 1
+        duration: time + 0.5
       };
     }
     
@@ -263,13 +251,13 @@
           heart.className = 'heart';
           heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
           heart.style.left = Math.random() * 100 + 'vw';
-          heart.style.animationDuration = (Math.random() * 4 + 3) + 's';
-          heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+          heart.style.animationDuration = (Math.random() * 3 + 2) + 's'; // Faster hearts
+          heart.style.fontSize = (Math.random() * 25 + 10) + 'px'; // Varied sizes
           container.appendChild(heart);
           
           // Remove heart after animation
-          setTimeout(() => heart.remove(), 6000);
-        }, i * 300);
+          setTimeout(() => heart.remove(), 5000);
+        }, i * 200); // More frequent hearts
       }
     }
     
