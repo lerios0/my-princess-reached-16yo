@@ -82,6 +82,12 @@
       20% { opacity: 1; }
       100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
     }
+    .loading {
+      display: none;
+      font-size: 0.9em;
+      color: #d1005e;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -97,12 +103,16 @@
     
     <img id="birthday-pic" src="princess-photo.jpg" alt="Birthday Princess">
     
-    <!-- Using an external birthday song -->
-    <audio id="birthdaySong" src="https://assets.mixkit.co/music/preview/mixkit-happy-birthday-to-you-388.mp3" preload="auto"></audio>
+    <!-- Audio element with your Google Drive song -->
+    <audio id="birthdaySong">
+      <source src="https://drive.google.com/uc?export=download&id=1iW7L8V_Yh7yVlrYhT-BqCyW3KS-f1r2J" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
     
     <button id="musicBtn" onclick="playSong()">
       🎵 Play Birthday Song!
     </button>
+    <div id="loadingText" class="loading">Loading song... please wait</div>
     
     <p class="signature">
       139oba | 100 sna b sha w lahna and u get what u wish for wit good life :3
@@ -113,28 +123,44 @@
     // PLAY/STOP FUNCTIONALITY
     let isPlaying = false;
     const audio = document.getElementById('birthdaySong');
+    const loadingText = document.getElementById('loadingText');
+    const btn = document.getElementById('musicBtn');
+    
+    // Preload the audio when page loads
+    audio.addEventListener('canplaythrough', function() {
+      loadingText.style.display = 'none';
+    });
     
     function playSong() {
-      const btn = document.getElementById('musicBtn');
-      
       if (!isPlaying) {
+        // Show loading text
+        loadingText.style.display = 'block';
+        
         // Start playing
-        audio.play();
-        btn.innerHTML = "⏸️ Pause Song";
-        isPlaying = true;
-        createHearts();
+        audio.play()
+          .then(() => {
+            btn.innerHTML = "⏸️ Pause Song";
+            isPlaying = true;
+            createHearts();
+            loadingText.style.display = 'none';
+          })
+          .catch(error => {
+            loadingText.innerHTML = "Error loading song. Try again or check your connection.";
+            console.error("Playback failed:", error);
+          });
       } else {
         // Pause playing
         audio.pause();
         btn.innerHTML = "🎵 Play Birthday Song!";
         isPlaying = false;
         stopHearts();
+        loadingText.style.display = 'none';
       }
     }
     
     // When song ends naturally
     audio.addEventListener('ended', function() {
-      document.getElementById('musicBtn').innerHTML = "🎵 Play Birthday Song!";
+      btn.innerHTML = "🎵 Play Birthday Song!";
       isPlaying = false;
       stopHearts();
     });
