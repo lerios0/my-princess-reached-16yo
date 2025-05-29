@@ -97,11 +97,11 @@
     
     <img id="birthday-pic" src="princess-photo.jpg" alt="Birthday Princess">
     
-    <!-- NO EXTERNAL FILES NEEDED -->
-    <audio id="birthdaySong"></audio>
+    <!-- Using an external birthday song -->
+    <audio id="birthdaySong" src="https://assets.mixkit.co/music/preview/mixkit-happy-birthday-to-you-388.mp3" preload="auto"></audio>
     
     <button id="musicBtn" onclick="playSong()">
-      🎵 Play Birthday Melody!
+      🎵 Play Birthday Song!
     </button>
     
     <p class="signature">
@@ -110,134 +110,34 @@
   </div>
 
   <script>
-    // GENERATE SILLY CUTE BIRTHDAY MELODY
-    function generateBirthdayTune() {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const masterGain = audioCtx.createGain();
-      masterGain.gain.value = 0.4; // Lower volume for cuteness
-      masterGain.connect(audioCtx.destination);
-      
-      // Create a cute, silly sound
-      function createCuteNote(freq, startTime, duration) {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        
-        // Use square wave for a more toy-like sound
-        osc.type = 'square';
-        osc.frequency.value = freq;
-        
-        // Quick attack and release for bouncy feel
-        gain.gain.setValueAtTime(0, startTime);
-        gain.gain.linearRampToValueAtTime(0.7, startTime + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-        
-        // Add vibrato for extra silliness
-        const vibrato = audioCtx.createOscillator();
-        const vibratoGain = audioCtx.createGain();
-        vibrato.frequency.value = 10; // Fast vibrato
-        vibratoGain.gain.value = freq * 0.05; // Subtle pitch variation
-        vibrato.connect(vibratoGain);
-        vibratoGain.connect(osc.frequency);
-        
-        osc.connect(gain);
-        gain.connect(masterGain);
-        
-        osc.start(startTime);
-        vibrato.start(startTime);
-        osc.stop(startTime + duration + 0.1);
-        vibrato.stop(startTime + duration + 0.1);
-      }
-      
-      // Faster, bouncier "Happy Birthday" melody
-      const notes = [
-        // First phrase (faster tempo)
-        {freq: 392, duration: 0.2}, // G
-        {freq: 392, duration: 0.15}, // G
-        {freq: 440, duration: 0.3}, // A
-        {freq: 392, duration: 0.3}, // G
-        {freq: 523, duration: 0.3}, // C
-        {freq: 494, duration: 0.6}, // B
-        
-        // Second phrase
-        {freq: 392, duration: 0.2}, // G
-        {freq: 392, duration: 0.15}, // G
-        {freq: 440, duration: 0.3}, // A
-        {freq: 392, duration: 0.3}, // G
-        {freq: 587, duration: 0.3}, // D
-        {freq: 523, duration: 0.6}, // C
-        
-        // Third phrase
-        {freq: 392, duration: 0.2}, // G
-        {freq: 392, duration: 0.15}, // G
-        {freq: 784, duration: 0.3}, // G (high)
-        {freq: 659, duration: 0.3}, // E
-        {freq: 523, duration: 0.3}, // C
-        {freq: 494, duration: 0.3}, // B
-        {freq: 440, duration: 0.6}, // A
-        
-        // Fourth phrase
-        {freq: 698, duration: 0.2}, // F
-        {freq: 698, duration: 0.15}, // F
-        {freq: 659, duration: 0.3}, // E
-        {freq: 523, duration: 0.3}, // C
-        {freq: 587, duration: 0.3}, // D
-        {freq: 523, duration: 0.9}, // C
-        
-        // Added silly outro
-        {freq: 523, duration: 0.1}, // C
-        {freq: 587, duration: 0.1}, // D
-        {freq: 659, duration: 0.1}, // E
-        {freq: 784, duration: 0.3}, // G
-        {freq: 659, duration: 0.1}, // E
-        {freq: 784, duration: 0.5}  // G (final note)
-      ];
-      
-      let time = audioCtx.currentTime + 0.1;
-      
-      // Play each note with cute sound
-      notes.forEach(note => {
-        createCuteNote(note.freq, time, note.duration * 0.8);
-        time += note.duration * 0.9; // Faster transitions
-      });
-      
-      return {
-        stop: () => {
-          masterGain.disconnect();
-          audioCtx.close();
-        },
-        duration: time + 0.5
-      };
-    }
-    
     // PLAY/STOP FUNCTIONALITY
-    let birthdayMelody = null;
+    let isPlaying = false;
+    const audio = document.getElementById('birthdaySong');
     
     function playSong() {
       const btn = document.getElementById('musicBtn');
       
-      if (!birthdayMelody) {
+      if (!isPlaying) {
         // Start playing
-        birthdayMelody = generateBirthdayTune();
-        btn.innerHTML = "⏸️ Pause Melody";
+        audio.play();
+        btn.innerHTML = "⏸️ Pause Song";
+        isPlaying = true;
         createHearts();
-        
-        // Auto-stop when melody ends
-        setTimeout(() => {
-          if (birthdayMelody) {
-            birthdayMelody.stop();
-            birthdayMelody = null;
-            btn.innerHTML = "🎵 Play Birthday Melody!";
-            stopHearts();
-          }
-        }, birthdayMelody.duration * 1000);
       } else {
-        // Stop playing
-        birthdayMelody.stop();
-        birthdayMelody = null;
-        btn.innerHTML = "🎵 Play Birthday Melody!";
+        // Pause playing
+        audio.pause();
+        btn.innerHTML = "🎵 Play Birthday Song!";
+        isPlaying = false;
         stopHearts();
       }
     }
+    
+    // When song ends naturally
+    audio.addEventListener('ended', function() {
+      document.getElementById('musicBtn').innerHTML = "🎵 Play Birthday Song!";
+      isPlaying = false;
+      stopHearts();
+    });
     
     // FLOATING HEARTS ANIMATION
     function createHearts() {
@@ -251,13 +151,13 @@
           heart.className = 'heart';
           heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
           heart.style.left = Math.random() * 100 + 'vw';
-          heart.style.animationDuration = (Math.random() * 3 + 2) + 's'; // Faster hearts
-          heart.style.fontSize = (Math.random() * 25 + 10) + 'px'; // Varied sizes
+          heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+          heart.style.fontSize = (Math.random() * 25 + 10) + 'px';
           container.appendChild(heart);
           
           // Remove heart after animation
           setTimeout(() => heart.remove(), 5000);
-        }, i * 200); // More frequent hearts
+        }, i * 200);
       }
     }
     
