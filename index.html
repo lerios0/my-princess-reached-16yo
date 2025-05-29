@@ -52,29 +52,35 @@
   <!-- Image placeholder (drag a photo here when ready) -->
   <img id="birthday-pic" src="" alt="Birthday Princess Photo">
   
-  <!-- Audio player with Google Drive link -->
-  <audio id="birthdaySong">
-    <source src="https://drive.google.com/uc?export=download&id=1iW7L8V_Yh7yVlrYhT-BqCyW3KS-f1r2J" type="audio/mpeg">
-  </audio>
+<!-- RELIABLE AUDIO PLAYER -->
+<audio id="birthdaySong" controls style="display:none;">
+  <source src="birthday-song.mp3" type="audio/mpeg">
+  <source src="birthday-song.ogg" type="audio/ogg"> <!-- Backup format -->
+  Your princess deserves music! Update your browser 😉
+</audio>
+
+<!-- SUPER BUTTON WITH ERROR HANDLING -->
+<button onclick="playSong()" id="musicBtn">
+  🎵 Play Birthday Magic!
+</button>
+
+<script>
+// ULTRA-RELIABLE PLAY FUNCTION
+function playSong() {
+  const song = document.getElementById('birthdaySong');
+  const btn = document.getElementById('musicBtn');
   
-  <!-- Play button (required for autoplay to work) -->
-  <button onclick="playSong()">🎵 Play Birthday Song</button>
-  
-  <script>
-    function playSong() {
-      const song = document.getElementById('birthdaySong');
-      song.play();
-      
-      // Optional: Hide button after click
-      document.querySelector('button').style.display = 'none';
-    }
-    
-    // Try autoplay (may not work in all browsers)
-    window.onload = function() {
-      document.getElementById('birthdaySong').play().catch(e => {
-        console.log("Autoplay blocked - waiting for button click");
-      });
-    }
-  </script>
+  // First try: Regular play
+  song.play().then(() => {
+    btn.innerHTML = "🎶 Now Playing!";
+    btn.style.background = "#4CAF50";
+  }).catch(e => {
+    // Second try: Unhide controls if blocked
+    song.style.display = 'block';
+    btn.innerHTML = "🔇 Click Allow → Then Play";
+    btn.onclick = () => song.play();
+  });
+}
+</script>
 </body>
 </html>
