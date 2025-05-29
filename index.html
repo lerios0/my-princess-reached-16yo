@@ -82,12 +82,6 @@
       20% { opacity: 1; }
       100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
     }
-    .loading {
-      display: none;
-      font-size: 0.9em;
-      color: #d1005e;
-      margin-top: 10px;
-    }
   </style>
 </head>
 <body>
@@ -103,16 +97,12 @@
     
     <img id="birthday-pic" src="princess-photo.jpg" alt="Birthday Princess">
     
-    <!-- Audio element with your Google Drive song -->
-    <audio id="birthdaySong">
-      <source src="https://drive.google.com/uc?export=download&id=1iW7L8V_Yh7yVlrYhT-BqCyW3KS-f1r2J" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
+    <!-- NO EXTERNAL FILES NEEDED -->
+    <audio id="birthdaySong"></audio>
     
     <button id="musicBtn" onclick="playSong()">
-      🎵 Play Birthday Song!
+      🎵 Play Birthday Melody!
     </button>
-    <div id="loadingText" class="loading">Loading song... please wait</div>
     
     <p class="signature">
       139oba | 100 sna b sha w lahna and u get what u wish for wit good life :3
@@ -120,50 +110,146 @@
   </div>
 
   <script>
-    // PLAY/STOP FUNCTIONALITY
-    let isPlaying = false;
-    const audio = document.getElementById('birthdaySong');
-    const loadingText = document.getElementById('loadingText');
-    const btn = document.getElementById('musicBtn');
-    
-    // Preload the audio when page loads
-    audio.addEventListener('canplaythrough', function() {
-      loadingText.style.display = 'none';
-    });
-    
-    function playSong() {
-      if (!isPlaying) {
-        // Show loading text
-        loadingText.style.display = 'block';
+    // GENERATE PIANO-STYLE BIRTHDAY MELODY
+    function generateBirthdayTune() {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.5;
+      masterGain.connect(audioCtx.destination);
+      
+      // Create a more piano-like sound
+      function createPianoNote(freq, startTime, duration) {
+        // Create oscillators for richer sound
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
         
-        // Start playing
-        audio.play()
-          .then(() => {
-            btn.innerHTML = "⏸️ Pause Song";
-            isPlaying = true;
-            createHearts();
-            loadingText.style.display = 'none';
-          })
-          .catch(error => {
-            loadingText.innerHTML = "Error loading song. Try again or check your connection.";
-            console.error("Playback failed:", error);
-          });
-      } else {
-        // Pause playing
-        audio.pause();
-        btn.innerHTML = "🎵 Play Birthday Song!";
-        isPlaying = false;
-        stopHearts();
-        loadingText.style.display = 'none';
+        osc1.type = 'sine';
+        osc2.type = 'triangle';
+        osc1.frequency.value = freq;
+        osc2.frequency.value = freq * 2;
+        
+        // Create envelope for piano-like attack/decay
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(0.8, startTime + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.3, startTime + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+        
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(masterGain);
+        
+        osc1.start(startTime);
+        osc2.start(startTime);
+        osc1.stop(startTime + duration + 0.1);
+        osc2.stop(startTime + duration + 0.1);
       }
+      
+      // Extended "Happy Birthday" melody with more notes
+      const notes = [
+        // First phrase
+        {freq: 392, duration: 0.3}, // G
+        {freq: 392, duration: 0.2}, // G
+        {freq: 440, duration: 0.5}, // A
+        {freq: 392, duration: 0.5}, // G
+        {freq: 523, duration: 0.5}, // C
+        {freq: 494, duration: 1.0}, // B
+        
+        // Second phrase
+        {freq: 392, duration: 0.3}, // G
+        {freq: 392, duration: 0.2}, // G
+        {freq: 440, duration: 0.5}, // A
+        {freq: 392, duration: 0.5}, // G
+        {freq: 587, duration: 0.5}, // D
+        {freq: 523, duration: 1.0}, // C
+        
+        // Third phrase
+        {freq: 392, duration: 0.3}, // G
+        {freq: 392, duration: 0.2}, // G
+        {freq: 784, duration: 0.5}, // G (high)
+        {freq: 659, duration: 0.5}, // E
+        {freq: 523, duration: 0.5}, // C
+        {freq: 494, duration: 0.5}, // B
+        {freq: 440, duration: 1.0}, // A
+        
+        // Fourth phrase
+        {freq: 698, duration: 0.3}, // F
+        {freq: 698, duration: 0.2}, // F
+        {freq: 659, duration: 0.5}, // E
+        {freq: 523, duration: 0.5}, // C
+        {freq: 587, duration: 0.5}, // D
+        {freq: 523, duration: 1.5}, // C
+        
+        // Added chorus section to make it longer
+        {freq: 523, duration: 0.3}, // C
+        {freq: 523, duration: 0.2}, // C
+        {freq: 587, duration: 0.5}, // D
+        {freq: 523, duration: 0.5}, // C
+        {freq: 659, duration: 0.5}, // E
+        {freq: 587, duration: 1.0}, // D
+        
+        {freq: 392, duration: 0.3}, // G
+        {freq: 392, duration: 0.2}, // G
+        {freq: 784, duration: 0.5}, // G (high)
+        {freq: 659, duration: 0.5}, // E
+        {freq: 523, duration: 0.5}, // C
+        {freq: 494, duration: 0.5}, // B
+        {freq: 440, duration: 1.0}, // A
+        
+        {freq: 698, duration: 0.3}, // F
+        {freq: 698, duration: 0.2}, // F
+        {freq: 659, duration: 0.5}, // E
+        {freq: 523, duration: 0.5}, // C
+        {freq: 587, duration: 0.5}, // D
+        {freq: 523, duration: 2.0}  // C (final note longer)
+      ];
+      
+      let time = audioCtx.currentTime + 0.1;
+      
+      // Play each note with piano-like sound
+      notes.forEach(note => {
+        createPianoNote(note.freq, time, note.duration * 0.9);
+        time += note.duration;
+      });
+      
+      return {
+        stop: () => {
+          masterGain.disconnect();
+          audioCtx.close();
+        },
+        duration: time + 1
+      };
     }
     
-    // When song ends naturally
-    audio.addEventListener('ended', function() {
-      btn.innerHTML = "🎵 Play Birthday Song!";
-      isPlaying = false;
-      stopHearts();
-    });
+    // PLAY/STOP FUNCTIONALITY
+    let birthdayMelody = null;
+    
+    function playSong() {
+      const btn = document.getElementById('musicBtn');
+      
+      if (!birthdayMelody) {
+        // Start playing
+        birthdayMelody = generateBirthdayTune();
+        btn.innerHTML = "⏸️ Pause Melody";
+        createHearts();
+        
+        // Auto-stop when melody ends
+        setTimeout(() => {
+          if (birthdayMelody) {
+            birthdayMelody.stop();
+            birthdayMelody = null;
+            btn.innerHTML = "🎵 Play Birthday Melody!";
+            stopHearts();
+          }
+        }, birthdayMelody.duration * 1000);
+      } else {
+        // Stop playing
+        birthdayMelody.stop();
+        birthdayMelody = null;
+        btn.innerHTML = "🎵 Play Birthday Melody!";
+        stopHearts();
+      }
+    }
     
     // FLOATING HEARTS ANIMATION
     function createHearts() {
@@ -177,13 +263,13 @@
           heart.className = 'heart';
           heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
           heart.style.left = Math.random() * 100 + 'vw';
-          heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
-          heart.style.fontSize = (Math.random() * 25 + 10) + 'px';
+          heart.style.animationDuration = (Math.random() * 4 + 3) + 's';
+          heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
           container.appendChild(heart);
           
           // Remove heart after animation
-          setTimeout(() => heart.remove(), 5000);
-        }, i * 200);
+          setTimeout(() => heart.remove(), 6000);
+        }, i * 300);
       }
     }
     
