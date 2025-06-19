@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>a suplise fol may plintheth :3</title>
   <style>
     body {
@@ -106,92 +106,70 @@
 </head>
 <body>
   <div class="hearts" id="heartsContainer"></div>
-  
+
   <div class="container">
     <img id="achievement-pic" src="achievement.png" alt="Happy Birthday Achievement">
-    
+
     <h1>🎂 A Princess Reached 16 Years Old! 💖</h1>
-    
+
     <p>
       Happy birthday my lil princess! I met u when u were just 13 years old and ur now 16!!<br>
       Ur getting older and older. i loved u the first time i saw u and hmdlh we got a chance by seeing each tgtr growing up<br>
       i hope u will never stop loving me like i do and keep our promises to marrrying. 1 nope mar smue on your race will be always present with a
     </p>
-    
+
     <img id="birthday-pic" src="princess-photo.jpg" alt="Birthday Princess">
-    
+
     <div class="music-container">
-      <button id="musicBtn" onclick="playSong()">
-        🎵 Play Birthday Melody!
-      </button>
-      <img id="happy-bilday-pic" src="icon4.jpg" alt="Happi Bilday">
+      <button id="musicBtn" onclick="playSong()">🎵 Play Birthday Melody!</button>
+
+      <img id="happy-bilday-pic" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD/2wCEAAkGBxISEhUQEBIVFhUVFRUVFRAWEBUXFhgVFRUWFhUXFRcYHSggGBolGxUVITEhJSkrLi4uFx8zODMsNygtLisBCgoKDg0OGhAQGy0lICYtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAMIBAwMBIgACEQEDEQH/xAAcAAACAwEBAQEAAAAAAAAAAAAEBQIDBgABBwj/xABIEAACAQIEAwUFCQYGAQQDAQABAhEAAwQSITEFBkFREyJhcYGRBhQjMkKxBxVSscHR4fAUM1Lh8AcjYnKCkqLxFv/EABsBAQACAwEBAAAAAAAAAAAAAAADBAECBQYH/8QAOxEAAgECAwQIBAUCBwEAAAAAAAECEQMSITEEE0FRYXEygZGx8BQiwdHh8fEyUmKSwuH/2gAMAwEAAhEDEQA/APvoooor8ZP5nRQAUUUUAFFFFABRRRQAUUUUAf/2Q==" alt="Happi Bilday">
+
       <div style="font-size: 1.5em; color: #d1005e; margin-top: 5px;">Happi Bilday</div>
     </div>
-    
+
     <audio id="birthdaySong"></audio>
-    
+
     <p class="signature">
       139oba | 100 sna b sha w lahna and u get what u wish for wit good life andddddd
     </p>
   </div>
 
   <script>
-    // GENERATE PIANO-STYLE BIRTHDAY MELODY
     function generateBirthdayTune() {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const masterGain = audioCtx.createGain();
       masterGain.gain.value = 0.5;
       masterGain.connect(audioCtx.destination);
-      
+
       function createPianoNote(freq, startTime, duration) {
         const osc1 = audioCtx.createOscillator();
         const osc2 = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        
         osc1.type = 'sine';
         osc2.type = 'triangle';
         osc1.frequency.value = freq;
         osc2.frequency.value = freq * 2;
-        
         gain.gain.setValueAtTime(0, startTime);
         gain.gain.linearRampToValueAtTime(0.8, startTime + 0.01);
         gain.gain.exponentialRampToValueAtTime(0.3, startTime + 0.1);
         gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-        
         osc1.connect(gain);
         osc2.connect(gain);
         gain.connect(masterGain);
-        
         osc1.start(startTime);
         osc2.start(startTime);
         osc1.stop(startTime + duration + 0.1);
         osc2.stop(startTime + duration + 0.1);
       }
-      
-      const notes = [
-        {freq: 392, duration: 0.3}, {freq: 392, duration: 0.2}, {freq: 440, duration: 0.5}, 
-        {freq: 392, duration: 0.5}, {freq: 523, duration: 0.5}, {freq: 494, duration: 1.0},
-        {freq: 392, duration: 0.3}, {freq: 392, duration: 0.2}, {freq: 440, duration: 0.5},
-        {freq: 392, duration: 0.5}, {freq: 587, duration: 0.5}, {freq: 523, duration: 1.0},
-        {freq: 392, duration: 0.3}, {freq: 392, duration: 0.2}, {freq: 784, duration: 0.5},
-        {freq: 659, duration: 0.5}, {freq: 523, duration: 0.5}, {freq: 494, duration: 0.5},
-        {freq: 440, duration: 1.0}, {freq: 698, duration: 0.3}, {freq: 698, duration: 0.2},
-        {freq: 659, duration: 0.5}, {freq: 523, duration: 0.5}, {freq: 587, duration: 0.5},
-        {freq: 523, duration: 1.5}, {freq: 523, duration: 0.3}, {freq: 523, duration: 0.2},
-        {freq: 587, duration: 0.5}, {freq: 523, duration: 0.5}, {freq: 659, duration: 0.5},
-        {freq: 587, duration: 1.0}, {freq: 392, duration: 0.3}, {freq: 392, duration: 0.2},
-        {freq: 784, duration: 0.5}, {freq: 659, duration: 0.5}, {freq: 523, duration: 0.5},
-        {freq: 494, duration: 0.5}, {freq: 440, duration: 1.0}, {freq: 698, duration: 0.3},
-        {freq: 698, duration: 0.2}, {freq: 659, duration: 0.5}, {freq: 523, duration: 0.5},
-        {freq: 587, duration: 0.5}, {freq: 523, duration: 2.0}
-      ];
-      
+
+      const notes = [392,392,440,392,523,494,392,392,440,392,587,523,392,392,784,659,523,494,440,698,698,659,523,587,523];
       let time = audioCtx.currentTime + 0.1;
-      notes.forEach(note => {
-        createPianoNote(note.freq, time, note.duration * 0.9);
-        time += note.duration;
+      notes.forEach(freq => {
+        createPianoNote(freq, time, 0.4);
+        time += 0.4;
       });
-      
+
       return {
         stop: () => {
           masterGain.disconnect();
@@ -200,17 +178,14 @@
         duration: time + 1
       };
     }
-    
+
     let birthdayMelody = null;
-    
     function playSong() {
       const btn = document.getElementById('musicBtn');
-      
       if (!birthdayMelody) {
         birthdayMelody = generateBirthdayTune();
         btn.innerHTML = "⏸️ Pause Melody";
         createHearts();
-        
         setTimeout(() => {
           if (birthdayMelody) {
             birthdayMelody.stop();
@@ -226,11 +201,10 @@
         stopHearts();
       }
     }
-    
+
     function createHearts() {
       const container = document.getElementById('heartsContainer');
       const hearts = ['❤️', '🧡', '💛', '💚', '💙', '💜', '🤍', '💖'];
-      
       for (let i = 0; i < 50; i++) {
         setTimeout(() => {
           const heart = document.createElement('div');
@@ -240,12 +214,11 @@
           heart.style.animationDuration = (Math.random() * 4 + 3) + 's';
           heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
           container.appendChild(heart);
-          
           setTimeout(() => heart.remove(), 6000);
         }, i * 300);
       }
     }
-    
+
     function stopHearts() {
       document.getElementById('heartsContainer').innerHTML = '';
     }
